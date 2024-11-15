@@ -1,0 +1,109 @@
+Elucidate the life cycle of Java threads, describe all the methods in it and depict the state transition  diagram ?
+
+Life Cycle of a Java Thread
+In Java, threads are instances of the Thread class, and they undergo a series of states during their lifetime. These states are managed by the Java Thread Scheduler and determine the thread's behavior in a multithreaded environment. The life cycle of a Java thread consists of the following states:
+
+New (Born state):
+
+A thread is in the new state when it is created but not yet started. This occurs when you instantiate the Thread object but have not yet invoked the start() method.
+Runnable (Ready to run):
+
+A thread moves to the runnable state when the start() method is called. This does not mean the thread is executing, only that it is ready to run. The thread is eligible for execution by the Java thread scheduler, but the actual execution depends on the availability of the CPU.
+Blocked (Waiting for a resource):
+
+A thread enters the blocked state when it is waiting for a resource or lock that another thread is holding. This can happen when a thread tries to access a synchronized block of code that is already locked by another thread.
+Waiting (Waiting for a condition):
+
+A thread enters the waiting state when it is waiting for another thread to perform a particular action. For example, the wait() method can be used to put a thread in the waiting state until it receives a notification (via notify() or notifyAll()).
+Timed Waiting (Waiting for a specified time):
+
+A thread enters the timed waiting state when it is waiting for a specific amount of time. Methods such as sleep(millis), join(millis), and wait(millis) are examples of situations where a thread will enter this state.
+Terminated (Dead):
+
+A thread enters the terminated state when it completes its execution (either normally or due to an exception), or when it is terminated manually using the stop() method (although this method is deprecated).
+Methods Involved in Thread Lifecycle
+start():
+
+The start() method is used to initiate the thread. It invokes the run() method in a separate call stack.
+run():
+
+This is the entry point of the thread. It contains the code that the thread will execute when the thread is started. run() is invoked automatically when start() is called.
+sleep(long millis):
+
+Causes the thread to sleep for a specified amount of time (in milliseconds). During this period, the thread will be in the timed waiting state.
+wait():
+
+Causes the current thread to wait until another thread sends a signal (via notify() or notifyAll()). The thread enters the waiting state.
+notify():
+
+Used to wake up one of the threads waiting on the same object.
+notifyAll():
+
+Wakes up all threads that are waiting on the object.
+join():
+
+Makes the current thread wait until the thread on which join() was called has finished execution. It can also take a time argument for a timed waiting state.
+interrupt():
+
+Interrupts a thread that is in a blocked, waiting, or sleeping state. It throws an InterruptedException if the thread is interrupted while it is waiting or sleeping.
+isAlive():
+
+Returns true if the thread is still running or is in any state other than terminated.
+State Transition Diagram
+Below is a simplified representation of the Java thread lifecycle:
+
+sql
+Copy code
+      +------------------+
+      |     New          | 
+      | (Thread Created) |
+      +------------------+
+             |
+             v
+      +------------------+
+      |    Runnable      |
+      | (Ready to run)   |
+      +------------------+
+             |
+        +----+----+
+        |         |
+        v         v
++-------------------+    +---------------------+
+|   Blocked         |    |   Waiting           |
+| (Waiting for lock)|    | (Waiting for event) |
++-------------------+    +---------------------+
+             |
+             v
+    +---------------------+
+    |  Timed Waiting      |
+    | (Sleep, Join, Wait) |
+    +---------------------+
+             |
+             v
+      +-------------------+
+      |   Terminated      |
+      | (Thread ends)     |
+      +-------------------+
+Explanation of Transitions:
+New → Runnable:
+The thread enters the runnable state when the start() method is invoked.
+
+Runnable → Blocked:
+The thread enters the blocked state when it is trying to acquire a lock on a synchronized method or block but is blocked by another thread holding the lock.
+
+Runnable → Waiting:
+A thread enters the waiting state when it calls the wait() method and waits for another thread to notify it.
+
+Runnable → Timed Waiting:
+A thread enters the timed waiting state when it calls methods like sleep(), join(), or wait(millis).
+
+Any State → Terminated:
+When the thread's run() method finishes execution, or the thread is manually terminated, it enters the terminated state.
+
+Blocked/Waiting → Runnable:
+A thread can return to the runnable state when the resource it is waiting for becomes available or when it receives a signal via notify() or notifyAll().
+
+Runnable → Blocked/Waiting:
+A thread may transition to a blocked or waiting state if it cannot proceed due to a lock or waiting for some event.
+
+By understanding the Java thread lifecycle and methods, you can effectively manage concurrency in a multithreaded environment, ensuring that threads are properly synchronized and that resource contention is minimized.
